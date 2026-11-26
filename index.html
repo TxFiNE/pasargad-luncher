@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pasargad Launcher</title>
+<style>
+:root{--ink:#0d0d0b;--bone:#ece3cf;--mut:#8d8878;--acc:#e4262c;--line:#2a2924;--d:Impact,"Arial Black",Tahoma,sans-serif;--mono:ui-monospace,Consolas,monospace}
+body.run{--acc:#35f08a}
+*{box-sizing:border-box;margin:0}
+body{font-family:Tahoma,Arial,sans-serif;background:var(--ink);color:var(--bone);min-height:100vh;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:70;opacity:.07;background:var(--grain,none)}
+.bgw{position:fixed;left:0;bottom:-3vw;font:22vw/1 var(--d);white-space:nowrap;color:transparent;-webkit-text-stroke:2px var(--line);animation:mq 90s linear infinite;z-index:0;direction:ltr;will-change:transform}
+@keyframes mq{to{transform:translateX(-50%)}}
+.top{position:relative;z-index:2;display:flex;align-items:center;gap:16px;height:44px;padding-inline-start:18px;background:var(--ink);-webkit-app-region:drag}
+.logo{font:20px var(--d);letter-spacing:.18em;direction:ltr}.logo b{background:var(--acc);color:var(--ink);padding:0 8px;margin-inline-end:8px;display:inline-block;transform:skew(-10deg)}
+.chip{font:12px var(--d);letter-spacing:.12em;border:2px solid var(--acc);color:var(--acc);padding:2px 10px;direction:ltr}
+.sp{flex:1}
+#wc{display:flex;direction:ltr;-webkit-app-region:no-drag}#wc button{all:unset;-webkit-app-region:no-drag;cursor:pointer;width:46px;height:44px;text-align:center;line-height:44px;color:var(--mut)}
+#wc button:hover{background:var(--bone);color:var(--ink)}#wc button:last-child:hover{background:#e4262c;color:#fff}
+.haz{height:6px;position:relative;z-index:2;background:repeating-linear-gradient(-45deg,var(--ink) 0 7px,var(--acc) 7px 14px)}
+.main{position:relative;z-index:1;flex:1;display:flex;min-height:0}
+.side{width:200px;border-left:2px solid var(--line);padding:14px 0;display:flex;flex-direction:column;background:rgba(13,13,11,.88)}
+.side button{all:unset;cursor:pointer;padding:15px 20px;font-weight:700;color:var(--mut);display:flex;gap:12px;align-items:center;border-bottom:1px solid var(--line);transition:transform .15s,background .15s,color .15s}
+.side button i{font:11px var(--d);font-style:normal;letter-spacing:.1em;color:var(--acc)}
+.side button:hover{color:var(--bone);transform:translateX(-8px)}
+.side button.on{background:var(--bone);color:var(--ink)}.side button.on i{color:var(--ink)}
+.content{flex:1;overflow:auto;padding:28px 34px}
+.page{display:none}.page.on{display:block;animation:in .28s cubic-bezier(.2,.8,.2,1)}
+@keyframes in{from{opacity:0;transform:translateX(-18px)}to{opacity:1;transform:none}}
+#ban{display:none;border:2px solid var(--acc);padding:10px 14px;margin-bottom:18px;font-size:13px}
+h2{font:34px var(--d);margin-bottom:22px;display:flex;gap:14px;align-items:center}h2::after{content:"";flex:1;height:2px;background:var(--line)}
+h3{font:700 15px Tahoma,Arial,sans-serif;color:var(--acc);margin:24px 0 8px}
+.hero{display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:430px}
+.hero h1{font:78px/1.05 var(--d);transform:skew(-6deg);margin-bottom:16px}
+.hero h1 small{display:block;font:13px var(--d);letter-spacing:.4em;color:var(--acc);margin-bottom:10px;direction:ltr;text-align:right}
+.hero h1 em{font-style:normal;background:var(--acc);color:var(--ink);padding:0 16px;display:inline-block}
+.hero p{color:var(--mut);margin-bottom:26px;max-width:420px;line-height:1.9}
+.btn{all:unset;cursor:pointer;display:inline-block;padding:14px 34px;font:800 17px Tahoma,Arial,sans-serif;background:var(--acc);color:var(--ink);border:2px solid var(--bone);box-shadow:6px 6px 0 var(--bone);transition:transform .12s,box-shadow .12s;margin:0 0 10px 16px}
+.btn:hover{transform:translate(-3px,-3px);box-shadow:9px 9px 0 var(--bone)}.btn:active{transform:translate(4px,4px);box-shadow:2px 2px 0 var(--bone)}
+.btn.ghost{background:var(--ink);color:var(--bone);box-shadow:6px 6px 0 var(--acc)}.btn.ghost:hover{box-shadow:9px 9px 0 var(--acc)}
+.btn.red{background:#e4262c;color:#fff}.btn.sm{padding:6px 18px;font-size:14px;box-shadow:3px 3px 0 var(--acc);margin:0}
+.btn[disabled]{opacity:.5;pointer-events:none}
+.btn.lock{background:repeating-linear-gradient(-45deg,#24231e 0 6px,#1a1914 6px 12px);color:var(--mut);border-color:var(--line);box-shadow:none;cursor:not-allowed}
+.btn.lock:hover,.btn.lock:active{transform:none;box-shadow:none}.btn.lock::after{content:" [قفل]"}
+.stats{display:flex;border:2px solid var(--line);width:max-content;max-width:100%;margin-top:22px}
+.stats div{padding:10px 22px;border-inline-start:2px solid var(--line);font:11px var(--d);letter-spacing:.12em;color:var(--mut);direction:ltr}.stats div:first-child{border:0}
+.stats b{display:block;font:700 15px Tahoma,Arial,sans-serif;letter-spacing:0;color:var(--bone);margin-bottom:2px;direction:rtl;word-break:break-all;max-width:240px}
+.stage{perspective:1000px;width:300px;height:340px;flex:none;display:grid;place-items:center;position:relative}
+.stage::before,.stage::after{content:"";position:absolute;width:46px;height:46px;border:3px solid var(--acc)}
+.stage::before{top:0;right:0;border-left:0;border-bottom:0}.stage::after{bottom:0;left:0;border-right:0;border-top:0}
+.rig{transform-style:preserve-3d;transform:rotateX(var(--rx,-8deg)) rotateY(var(--ry,0deg));transition:transform .2s;will-change:transform}
+.sway{width:230px;height:300px;position:relative;transform-style:preserve-3d;animation:sw 6s ease-in-out infinite alternate;will-change:transform}
+body.run .sway{animation-duration:2.4s}
+@keyframes sw{from{transform:rotateY(-38deg)}to{transform:rotateY(38deg)}}
+.l{position:absolute;inset:0;backface-visibility:hidden;display:grid;place-items:center;font:290px/1 Impact,"Arial Black",sans-serif}
+.srv{display:flex;align-items:center;gap:18px;border:2px solid var(--bone);padding:16px 22px;margin-bottom:18px;box-shadow:6px 6px 0 var(--line);transition:transform .12s,box-shadow .12s;background:var(--ink)}
+.srv:hover{transform:translate(-3px,-3px);box-shadow:9px 9px 0 var(--acc)}
+.srv .n{font:36px var(--d);color:var(--acc)}.srv .i{flex:1}.srv h3{font:22px var(--d);color:var(--bone);margin:0 0 4px}
+.srv small{font:12px var(--mono);color:var(--mut);direction:ltr;display:block;text-align:right}
+.nw{border-inline-start:6px solid var(--acc);background:#15140f;padding:16px 22px;margin-bottom:16px}.nw h3{margin:0 0 4px;color:var(--bone);font-size:18px}.nw small{font:12px var(--mono);color:var(--acc)}.nw p{color:var(--mut);margin-top:8px}
+label{display:flex;gap:10px;align-items:center;margin:11px 0;color:var(--mut)}input[type=checkbox]{accent-color:var(--acc);width:17px;height:17px}
+input[type=text],input[type=number]{background:var(--ink);border:2px solid var(--line);color:var(--bone);padding:8px 10px;width:110px;font:inherit;outline:0}
+input:focus{border-color:var(--acc)}input.wide{width:min(520px,100%);direction:ltr}
+code{display:block;direction:ltr;text-align:left;background:#15140f;border:2px solid var(--line);border-inline-start:6px solid var(--acc);padding:12px;margin:16px 0;font:13px var(--mono);color:var(--bone)}
+#dz{border:2px dashed var(--mut);padding:34px;text-align:center;color:var(--mut);cursor:pointer;margin-bottom:18px;background:repeating-linear-gradient(-45deg,transparent 0 10px,rgba(236,227,207,.04) 10px 20px)}
+#dz.h,#dz:hover{border-color:var(--acc);color:var(--acc)}
+.row2{display:flex;align-items:center;gap:14px;border:2px solid var(--line);padding:8px 14px;margin-bottom:8px}.row2 span{flex:1;direction:ltr;text-align:left;font-family:var(--mono)}.mut{color:var(--mut)}
+.toast{position:fixed;bottom:44px;left:22px;z-index:80;background:var(--bone);color:var(--ink);border:2px solid var(--ink);box-shadow:6px 6px 0 var(--acc);padding:12px 22px;font-weight:800;transform:translateX(-140%);transition:.25s}
+.toast.on{transform:none}.toast.err{background:#e4262c;color:#fff;box-shadow:6px 6px 0 var(--bone)}
+.tick{position:relative;z-index:2;background:var(--acc);color:var(--ink);overflow:hidden;white-space:nowrap;height:26px;line-height:26px;font:12px var(--d);letter-spacing:.2em;direction:ltr}
+.tick span{display:inline-block;animation:mq 40s linear infinite}
+#boot{position:fixed;inset:0;z-index:60;background:var(--ink);display:grid;place-items:center;text-align:center;transition:opacity .4s,visibility .4s}#boot.off{opacity:0;visibility:hidden}
+#boot b{display:block;font:46px var(--d);letter-spacing:.3em;direction:ltr;color:var(--acc)}
+.bar{width:280px;height:10px;border:2px solid var(--bone);margin:20px auto 12px;position:relative;overflow:hidden;direction:ltr}
+.bar::after{content:"";position:absolute;top:0;bottom:0;left:-40%;width:40%;background:var(--acc);animation:ld .9s linear infinite}@keyframes ld{to{left:100%}}
+
+@media(max-width:760px){
+ body{height:100dvh}
+ .main{min-height:0}
+ .side{width:132px;flex:none}
+ .side button{padding:12px 9px;font-size:12px;gap:7px}
+ .content{padding:18px 14px}
+ .hero{min-height:0;display:block}
+ .hero h1{font-size:48px}
+ .stage{display:none}
+ .stats{width:100%;flex-wrap:wrap}
+ .stats div{padding:8px 10px}
+ h2{font-size:25px}
+ .btn{padding:10px 15px;font-size:14px;margin-inline:0 8px}
+}
+@media(max-width:430px){
+ .side{width:112px}
+ .side button{font-size:11px;padding:11px 6px}
+ .logo{font-size:16px}
+ .chip{font-size:9px;padding:2px 5px}
+ .content{padding:14px 10px}
+ .hero h1{font-size:40px}
+}
+</style>
+</head>
+<body>
+<div class="bgw">PASARGAD — PASARGAD — PASARGAD — PASARGAD —</div>
+<div id="boot"><div><b>SCAN</b><div class="bar"></div><span class="mut">دارم چک می‌کنم گیم بازه یا نه...</span></div></div>
+<div class="top"><div class="logo"><b>P</b>PASARGAD</div><div class="chip" id="chip">GAME: OFFLINE</div><div class="sp"></div>
+ <div id="wc"><button data-w="min">—</button><button data-w="max">▢</button><button data-w="close">✕</button></div></div>
+<div class="haz"></div>
+<div class="main">
+ <div class="side" id="nav">
+  <button class="on" data-p="home"><i>01</i>کتابخانه</button>
+  <button data-p="servers"><i>02</i>سرورها</button>
+  <button data-p="csgo"><i>03</i>دانلود CS:GO</button>
+  <button data-p="news"><i>04</i>اخبار</button>
+  <button data-p="cfg"><i>05</i>مدیریت CFG</button>
+  <button data-p="settings"><i>06</i>تنظیمات</button>
+ </div>
+ <div class="content">
+  <div id="ban">نسخه‌ی وب فعال است. قابلیت‌های وابسته به برنامه‌ی ویندوز مثل تشخیص وضعیت بازی و مدیریت CFG فقط در نسخه‌ی دسکتاپ کار می‌کنند.</div>
+  <div class="page on" id="home">
+   <div class="hero">
+    <div><h1><small>PASARGAD TEAM</small>آماده‌ای؟<br>بریم <em>جنگ</em></h1>
+     <p>سرور پاسارگاد منتظره. گیم رو بالا بیار، وصل شو و بترکون.</p>
+     <button class="btn" id="act">اجرای بازی</button><button class="btn ghost" id="playMain" data-c>اتصال به سرور اصلی</button>
+     <div class="stats"><div>PLAYTIME<b id="pt">۰</b></div><div>STATUS<b id="gs">—</b></div><div>PATH<b id="gh">—</b></div></div></div>
+    <div class="stage" id="stage"><div class="rig" id="rig"><div class="sway" id="ext"></div></div></div>
+   </div>
+  </div>
+  <div class="page" id="servers"><h2>سرورها</h2><div id="srvList"></div></div>
+   <div class="page" id="csgo">
+    <h2>دانلود Counter-Strike: Global Offensive</h2>
+    <div class="nw">
+     <h3>Counter-Strike: Global Offensive</h3>
+     <p>برای دریافت بازی، صفحه‌ی آن را در فروشگاه استیم باز کن.</p>
+     <p style="margin-top:16px">
+      <a class="btn" href="https://store.steampowered.com/app/4465480/CounterStrikeGlobal_Offensive/" target="_blank" rel="noopener noreferrer">دانلود از استیم</a>
+     </p>
+    </div>
+   </div>
+  <div class="page" id="news"><h2>اخبار تیم</h2><div id="newsList"></div></div>
+  <div class="page" id="cfg"><h2>مدیریت CFG</h2>
+   <div id="dz">فایل <b>.cfg</b> را اینجا بنداز یا کلیک کن<br><small>مستقیم می‌ره توی csgo/cfg پوشه‌ی بازی</small></div>
+   <input type="file" id="fi" accept=".cfg" multiple hidden>
+   <button class="btn ghost sm" id="od">باز کردن پوشه‌ی cfg</button>
+   <h3>فایل‌های موجود</h3><div id="cfgList"></div>
+  </div>
+  <div class="page" id="settings"><h2>تنظیمات</h2>
+   <h3>فایل‌های بازی</h3>
+   <input type="text" class="wide" id="gp" readonly placeholder="مسیر انتخاب نشده">
+   <p style="margin-top:12px"><button class="btn ghost sm" id="pk">انتخاب پوشه</button> <button class="btn ghost sm" id="dt">تشخیص خودکار</button></p>
+   <p class="mut" style="font-size:12px;margin-top:8px">پوشه‌ای که داخلش csgo/cfg هست (معمولاً <span dir="ltr">csgo legacy</span>)</p>
+    <h3>فایل لانچر پاسارگاد</h3>
+    <input type="text" class="wide" id="launcherPath" readonly placeholder="فایل لانچر انتخاب نشده">
+    <p style="margin-top:12px">
+     <button class="btn ghost sm" id="browseLauncher">Browse فایل لانچر</button>
+     <button class="btn red sm" id="removeLauncher">حذف لانچر پاسارگاد</button>
+    </p>
+    <p class="mut" style="font-size:12px;margin-top:8px">حذف لانچر فقط باید فایل‌ها و اجزای خود لانچر را حذف کند؛ فایل‌های بازی و پوشه‌ی نصب CS:GO نباید دست‌کاری شوند.</p>
+
+   <h3>گزینه‌های اجرا</h3>
+   <label>رزولوشن <input type="number" data-k="w"> × <input type="number" data-k="h"></label>
+   <label>fps_max <input type="number" data-k="fps"></label>
+   <label><input type="checkbox" data-k="novid"> -novid</label>
+   <label><input type="checkbox" data-k="console"> -console</label>
+   <label><input type="checkbox" data-k="windowed"> -windowed</label>
+   <label><input type="checkbox" data-k="high"> -high</label>
+   <label>اضافه <input type="text" class="wide" data-k="extra" placeholder="+exec autoexec"></label>
+   <code id="opts"></code>
+  </div>
+ </div>
+</div>
+<div class="tick"><span id="tk"></span></div>
+<div class="toast" id="toast"></div>
+<script>
+const $=s=>document.querySelector(s),esc=s=>String(s).replace(/[&<>"']/g,c=>"&#"+c.charCodeAt(0)+";"),wait=ms=>new Promise(r=>setTimeout(r,ms));
+const api=window.pasargad;
+const defaultServers=[{name:"PASARGAD Main",ip:"46.38.138.143",port:22000,mode:"Competitive"}];
+let D={news:[],servers:defaultServers.slice()};
+function normalizeData(data){
+ if(!data || typeof data!=="object") return {news:[],servers:defaultServers.slice()};
+ return {
+  news:Array.isArray(data.news)?data.news:[],
+  servers:Array.isArray(data.servers)&&data.servers.length?data.servers:defaultServers.slice()
+ };
+}
+let C={gamePath:"",playSec:0,opts:{w:1920,h:1080,fps:0,novid:true,console:true,windowed:false,high:false,extra:""}};
+let S={running:false,busy:false},bt;
+const toast=(m,e)=>{const t=$("#toast");t.textContent=m;t.className="toast on"+(e?" err":"");clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove("on"),2800)};
+const GID="4465480";
+const args=()=>{const o=C.opts,a=[];o.novid&&a.push("-novid");o.console&&a.push("-console");a.push(o.windowed?"-windowed":"-fullscreen");
+ o.high&&a.push("-high");o.w&&a.push("-w",String(o.w));o.h&&a.push("-h",String(o.h));o.fps&&a.push("+fps_max",String(o.fps));
+ (o.extra||"").trim()&&a.push(...o.extra.trim().split(/\s+/));return a};
+// ----- UI state -----
+let uk;function ui(){const k=[S.running,S.busy,(C.playSec/3600).toFixed(1),D.servers.length].join();if(k===uk)return;uk=k;document.body.classList.toggle("run",S.running);const b=$("#act");
+ b.className="btn"+(S.running?" red":"");b.disabled=S.busy&&!S.running;
+ b.textContent=S.running?"بستن بازی":S.busy?"در حال اجرا...":"اجرای بازی";
+ $("#gs").textContent=S.running?"در حال اجرا":S.busy?"در حال بالا آمدن":"بسته";
+ $("#chip").textContent="GAME: "+(S.running?"ONLINE":S.busy?"LOADING":"OFFLINE");
+ document.querySelectorAll("[data-c]").forEach(x=>x.classList.toggle("lock",!!api&&!S.running));
+ $("#pt").textContent=(C.playSec/3600).toFixed(1)+" ساعت";
+ $("#tk").textContent=("PASARGAD TEAM // GAME "+(S.running?"ONLINE":"OFFLINE")+" // "+D.servers.length+" SERVER // ").repeat(8)}
+function setBusy(){S.busy=true;clearTimeout(bt);bt=setTimeout(()=>{S.busy=false;ui()},90000);ui()}
+async function poll(){if(!api)return;try{const s=await api.status();if(s.running)S.busy=false;S.running=s.running;C.playSec=s.playSec;ui()}catch{}}
+// ----- actions -----
+$("#act").onclick=async()=>{
+ if(S.running){
+  if(api){await api.close();toast("بازی بسته شد");return poll()}
+  return toast("بازی در حال اجراست")
+ }
+ if(S.busy)return;
+ // اجرای بازی مستقل از سرور: خود CS:GO رو از استیم بالا میاره، اتصال به سرور جداست
+ setBusy();
+ if(api&&api.appInfo){await api.launch(args());toast("در حال اجرای بازی...")}
+ else{location.href="steam://run/"+GID+"//"+encodeURIComponent(args().join(" "));toast("درخواست اجرای بازی به استیم رفت")}
+};
+async function connect(s){
+ if(!api){location.href=`steam://connect/${s.ip}:${s.port}`;return toast("در حال اتصال...")}
+ if(!S.running)return toast("گیم لانچ نیست! اول گیم رو لانچ کن",1);
+ toast("اتصال به "+s.name);try{await api.connect(s.ip,s.port)}catch{toast("اتصال انجام نشد",1)}}
+$("#playMain").onclick=()=>connect(D.servers[0]);
+$("#nav").onclick=e=>{const b=e.target.closest("button");if(!b)return;
+ document.querySelectorAll(".side button,.page").forEach(x=>x.classList.remove("on"));b.classList.add("on");$("#"+b.dataset.p).classList.add("on");if(b.dataset.p=="cfg")loadCfg()};
+document.querySelectorAll("[data-w]").forEach(b=>b.onclick=()=>api&&api.win(b.dataset.w));
+// ----- data -----
+function render(){
+ D=normalizeData(D);
+ $("#srvList").innerHTML=D.servers.map((s,i)=>`<div class="srv"><div class="n">0${i+1}</div><div class="i"><h3>${esc(s.name||"Game Server")}</h3><small>${esc(s.ip||"")}:${esc(s.port||"")} // ${esc(s.mode||"")}</small></div><button class="btn ghost sm" data-c data-i="${i}">اتصال</button></div>`).join("");
+ $("#newsList").innerHTML=D.news.map(n=>`<div class="nw"><small>${esc(n.date||"")}</small><h3>${esc(n.title||"")}</h3><p>${esc(n.text||"")}</p></div>`).join("");uk=null;ui()}
+$("#srvList").onclick=e=>{const b=e.target.closest("button");if(b)connect(D.servers[b.dataset.i])};
+// servers.json is optional; the built-in Pasargad server remains available offline.
+fetch("servers.json?"+Date.now(),{cache:"no-store"})
+ .then(r=>{if(!r.ok)throw new Error("servers.json unavailable");return r.json()})
+ .then(d=>{D=normalizeData(d);render()})
+ .catch(()=>{D=normalizeData(D);render()});
+// ----- settings -----
+const prev=()=>$("#opts").textContent=args().join(" ");
+function bind(){document.querySelectorAll("[data-k]").forEach(e=>{const k=e.dataset.k,cb=e.type=="checkbox";
+ cb?e.checked=!!C.opts[k]:e.value=C.opts[k]??"";e.oninput=()=>{C.opts[k]=cb?e.checked:e.value;prev();api&&api.setOpts(C.opts)}});prev()}
+const paths=()=>{$("#gp").value=C.gamePath||"";$("#gh").textContent=C.gamePath||"پیدا نشد؛ از تنظیمات انتخاب کن"};
+$("#pk").onclick=async()=>{if(!api)return toast("فقط در برنامه‌ی ویندوز",1);const r=await api.pick();if(r.error)return toast(r.error,1);C.gamePath=r.path;paths();toast("مسیر ذخیره شد")};
+$("#dt").onclick=async()=>{if(!api)return toast("فقط در برنامه‌ی ویندوز",1);const p=await api.detect();p?(C.gamePath=p,paths(),toast("بازی پیدا شد")):toast("پیدا نشد، دستی انتخاب کن",1)};
+// ----- launcher settings -----
+$("#browseLauncher").onclick=async()=>{
+ if(!api)return toast("انتخاب فایل لانچر فقط در برنامه‌ی ویندوز ممکن است",1);
+ if(typeof api.pickLauncherFile!=="function")return toast("این قابلیت به API نسخه‌ی ویندوز نیاز دارد",1);
+ try{const r=await api.pickLauncherFile();if(r?.error)return toast(r.error,1);if(r?.path){$("#launcherPath").value=r.path;toast("مسیر فایل لانچر ثبت شد")}}
+ catch{toast("انتخاب فایل لانچر انجام نشد",1)}
+};
+$("#removeLauncher").onclick=async()=>{
+ if(!api)return toast("حذف لانچر فقط در برنامه‌ی ویندوز ممکن است",1);
+ if(typeof api.removeLauncher!=="function")return toast("حذف امن نیازمند پیاده‌سازی در نسخه‌ی ویندوز است",1);
+ if(!confirm("فقط لانچر پاسارگاد حذف شود؟ فایل‌های بازی و پوشه‌ی CS:GO حذف نخواهند شد."))return;
+ try{const r=await api.removeLauncher();if(r?.error)return toast(r.error,1);toast("درخواست حذف لانچر انجام شد")}
+ catch{toast("حذف لانچر انجام نشد",1)}
+};
+// ----- CFG -----
+async function loadCfg(){const el=$("#cfgList");if(!api){el.innerHTML='<p class="mut">فقط در برنامه‌ی ویندوز</p>';return}
+ try{const l=await api.cfgList();el.innerHTML=l.length?l.map(f=>`<div class="row2"><span>${esc(f.name)}</span><small class="mut">${(f.size/1024).toFixed(1)} KB</small><button class="btn ghost sm" data-d="${esc(f.name)}">حذف</button></div>`).join(""):'<p class="mut">هنوز cfg ای نیست</p>'}
+ catch{el.innerHTML='<p class="mut">اول در تنظیمات مسیر بازی را انتخاب کن</p>'}}
+async function up(files){if(!api)return toast("فقط در برنامه‌ی ویندوز",1);
+ for(const f of files){if(!/\.cfg$/i.test(f.name)){toast("فقط فایل .cfg",1);continue}
+  try{await api.cfgSave(f.name,await f.text());toast(f.name+" کپی شد")}catch{toast("خطا: مسیر بازی را بررسی کن",1)}}loadCfg()}
+const dz=$("#dz");dz.onclick=()=>$("#fi").click();$("#fi").onchange=e=>up(e.target.files);
+dz.ondragover=()=>dz.classList.add("h");dz.ondragleave=()=>dz.classList.remove("h");dz.ondrop=e=>{dz.classList.remove("h");up(e.dataTransfer.files)};
+addEventListener("dragover",e=>e.preventDefault());addEventListener("drop",e=>e.preventDefault());
+$("#cfgList").onclick=async e=>{const b=e.target.closest("[data-d]");if(!b)return;await api.cfgDel(b.dataset.d);loadCfg()};
+$("#od").onclick=()=>api?api.openCfgDir().catch(()=>toast("مسیر بازی انتخاب نشده",1)):toast("فقط در برنامه‌ی ویندوز",1);
+// ----- 3D logo -----
+const ex=$("#ext");for(let i=8;i>=0;i--){const d=document.createElement("div");d.className="l";d.textContent="P";
+ d.style.cssText=`transform:translateZ(${-i*10}px);color:${i?`color-mix(in srgb,var(--acc) ${100-i*9}%,#000)`:"var(--bone)"}`;ex.appendChild(d)}
+let mm=0;addEventListener("mousemove",e=>{if(mm)return;const px=e.clientX,py=e.clientY;mm=requestAnimationFrame(()=>{mm=0;const r=$("#rig");
+ r.style.setProperty("--ry",(px/innerWidth-.5)*40+"deg");r.style.setProperty("--rx",-8-(py/innerHeight-.5)*30+"deg")})});
+(()=>{const c=document.createElement("canvas");c.width=c.height=96;const x=c.getContext("2d"),d=x.createImageData(96,96);
+ for(let i=0;i<d.data.length;i+=4){d.data[i]=d.data[i+1]=d.data[i+2]=Math.random()*255;d.data[i+3]=255}
+ x.putImageData(d,0,0);document.body.style.setProperty("--grain",`url(${c.toDataURL()})`)})();
+// ----- init: اول چک می‌کنه گیم بازه یا نه -----
+// Failsafe: never leave the loading screen covering the page.
+const hideBoot=()=>{const boot=$("#boot");if(boot)boot.classList.add("off")};
+setTimeout(hideBoot,4500);
+
+(async()=>{
+ try{
+  if(!api){$("#wc").style.display="none";$("#ban").style.display="block"}
+  else if(typeof api.getCfg==="function"){
+   try{
+    const c=await api.getCfg();
+    if(c&&typeof c==="object"){
+     C.gamePath=c.gamePath||"";
+     C.playSec=Number(c.playSec)||0;
+     Object.assign(C.opts,c.opts||{});
+     if(c.launcherPath)$("#launcherPath").value=c.launcherPath;
+    }
+    if(!C.gamePath&&typeof api.detect==="function"){
+     const p=await api.detect();if(p)C.gamePath=p;
+    }
+   }catch(err){console.warn("Launcher settings unavailable:",err)}
+  }
+  paths();bind();D=normalizeData(D);render();
+  await poll();
+  if(!api) await wait(250);
+  hideBoot();
+  if(api)toast(S.running?"گیم بازه، آماده‌ی اتصال":"گیم لانچ نیست",!S.running);
+  if(api)setInterval(()=>poll(),3000);
+ }catch(err){
+  console.error("Pasargad startup error:",err);
+  try{paths();bind();D=normalizeData(D);render()}catch(innerErr){console.error(innerErr)}
+  hideBoot();
+  toast("صفحه باز شد؛ بعضی قابلیت‌های لانچر در نسخه وب در دسترس نیستند",1);
+ }
+})();
+</script>
+</body>
+</html>
